@@ -1,4 +1,5 @@
 <template>
+  <!--create post card-->
   <div class="post-card" v-if="post">
     <div class="post-details">
       <a class="logo" href="#">
@@ -9,13 +10,11 @@
           height="50"
         />
       </a>
-
-      
         <p class="author">{{ post.Author }}</p>
         <p class="date">{{ post.formattedDate }}</p>
-      
     </div>
 
+    <!--If the post has an image then add it to post card -->
     <img
       v-if="post.Image"
       :src="'/' + post.Image"
@@ -25,15 +24,16 @@
 
     <p class="body">{{ post.Body }}</p>
 
-    <!-- like nupp + like’ide arv store’ist -->
+    <!-- like button + like counter -->
     <i
       class="material-symbols-outlined"
-      style="cursor: pointer;"
+      style="cursor: pointer;" 
       @click="likePostClick"
     >
+    <!--icon ID, so it finds the thumbs up-->
       thumb_up
     </i>
-    <span style="margin-left: 4px;">
+    <span class = "likebutton">
       {{ post.likes }}
     </span>
   </div>
@@ -56,6 +56,7 @@ export default {
       return this.postById(this.postId);
     }
   },
+//mapMutations so that we can use the likePostClick() method
   methods: {
     ...mapMutations(["likePost"]),
     likePostClick() {
@@ -64,3 +65,9 @@ export default {
   }
 };
 </script>
+
+<style>
+.likebutton {
+  margin-left: 4px;
+}
+</style>

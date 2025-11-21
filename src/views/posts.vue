@@ -1,16 +1,3 @@
-<!--<template>
-  <div>
-    <PostsComponent />
-  </div>
-</template>
-
-<script>
-import PostsComponent from "../components/PostsComponent.vue"
-export default {
-    name: "posts",
-}
-</script>
--->
 <template>
   <div class="center-wrapper">
     <button @click="resetAllLikes" class="reset-button">
@@ -68,4 +55,9 @@ export default {
   padding: 10px 10px;
   border-radius: 5px
 }
+.center-wrapper {
+  margin-top: 0px;
+}
 </style>
+
+
