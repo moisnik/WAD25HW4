@@ -1,4 +1,3 @@
-// src/route/index.js
 import { createRouter, createWebHistory } from "vue-router"
 import Posts from "../views/posts.vue"
 import Signup from "../views/signup.vue"
@@ -16,10 +15,11 @@ const routes = [{
 }]
 
 const router = createRouter({
-  history: createWebHistory(), // soovi korral: createWebHistory(process.env.BASE_URL)
+  history: createWebHistory(),
   routes,
 })
 
+//for titles
 router.afterEach((to) => {
   if (to.meta.title) {
     document.title = to.meta.title

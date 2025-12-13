@@ -26,6 +26,7 @@ const store = createStore({
       });
     }
   },
+  // for formatting posts
   actions: {
     async fetchPosts({ commit }) {
       const res = await fetch("/res/json/posts.json");
@@ -47,5 +48,3 @@ const store = createStore({
 });
 
 export default store;
-
-

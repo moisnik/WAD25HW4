@@ -4,8 +4,7 @@
       Reset all likes
     </button>
 
-    <div v-if="error">{{ error }}</div>
-
+    <!--making a postcomponent for every post (for-loop)-->
     <PostsComponent
       v-for="post in posts"
       :key="post.Id"
@@ -54,9 +53,6 @@ export default {
   border: none;
   padding: 10px 10px;
   border-radius: 5px
-}
-.center-wrapper {
-  margin-top: 0px;
 }
 </style>
 
