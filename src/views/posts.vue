@@ -1,58 +1,92 @@
 <template>
   <div class="center-wrapper">
-    <button @click="resetAllLikes" class="reset-button">
-      Reset all likes
+    <button class="button" @click="LogOut" :disabled="working">
+      Log out
     </button>
 
     <!--making a postcomponent for every post (for-loop)-->
     <PostsComponent
       v-for="post in posts"
-      :key="post.Id"
-      :post-id="post.Id" 
+      :key="post.id"
+      :post="post" 
     />
+
+    <div class="bottombuttons">
+    <button class="button" @click="AddPost" :disabled="working">
+      Add post   
+    </button>
+    <button class="button" @click="DeleteAll" :disabled="working">
+      Delete all
+    </button>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import PostsComponent from "../components/PostsComponent.vue";
-import { mapGetters } from "vuex";
 
 export default {
   name: "Posts",
-  components: {
-    PostsComponent
-  },
+  components: { PostsComponent },
   data() {
     return {
-      error: null
+      posts: [],
+      working: false,
     };
   },
-  computed: {
-    ...mapGetters(["allPosts"]),
-    posts() {
-      return this.allPosts;
-    }
-  },
-  created() {
-    this.$store
-      .dispatch("fetchPosts")
-      .catch(err => {
-        this.error = err.toString();
-      });
+  async created() {
+    await this.fetchPosts();
   },
   methods: {
-    resetAllLikes() {
-      this.$store.commit("resetLikes");
+    async fetchPosts() {
+      this.working = true;
+      try {
+        const res = await axios.get("http://localhost:3000/api/posts");
+        this.posts = res.data;
+      } catch (err) {
+        this.error = err.toString();
+      } finally {
+        this.working = false;
+      }
+    },
+    async deleteAll() {
+      this.working = true;
+      try {
+        await axios.delete("http://localhost:3000/api/posts");
+        await this.fetchPosts();
+      } catch (err) {
+        this.error = err.toString();
+      } finally {
+        this.working = false;
+      }
+    },
+    async AddPost(){
+      this.working = true;
+      try {
+        this.$router.push({ name: "addpost" });
+      } catch (err) {
+        this.error = err.toString();
+      } finally {
+        this.working = false;
+      }
+      
     }
+
   }
 };
 </script>
-
 <style>
-.reset-button {
+.button {
   border: none;
   padding: 10px 10px;
-  border-radius: 5px
+  border-radius: 5px;
+}
+
+.bottombuttons{
+  width: 20%;
+  display: flex;
+  justify-content: space-between;
 }
 </style>
 

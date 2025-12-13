@@ -1,22 +1,55 @@
 import { createRouter, createWebHistory } from "vue-router"
 import Posts from "../views/posts.vue"
 import Signup from "../views/signup.vue"
+import ContactUs from "../views/contactus.vue"
+import LogIn from "../views/login.vue"
+import ViewPost from "../views/viewpost.vue"
+import AddPost from "../views/addpost.vue"
 
 const routes = [{
-    path: "/posts", 
+    path: "/", 
     name: "posts", 
     component: Posts,
-    meta: { title: "Posts" } 
+    meta: { title: "Posts", requiresAuth: false} 
 },{
     path: "/signup", 
     name: "signup", 
     component: Signup,
     meta: { title: "Sign up" }
+},{
+    path: "/contactus", 
+    name: "contactus", 
+    component: ContactUs,
+    meta: { title: "Contact Us" }
+},{
+    path: "/login", 
+    name: "login", 
+    component: LogIn,
+    meta: { title: "Log in" }
+},{
+    path: "/viewpost/:id", 
+    name: "viewpost", 
+    component: ViewPost,
+    meta: { title: "View post", requiresAuth: false},
+    props: true,
+},{
+    path: "/addpost", 
+    name: "addpost", 
+    component: AddPost,
+    meta: { title: "Add post", requiresAuth: false}
 }]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+// check if the user is logged in
+router.beforeEach((to) => {
+  const token = localStorage.getItem('token')
+  if (to.meta.requiresAuth && !token) {
+    return { name: 'login' }
+  }
 })
 
 //for titles
