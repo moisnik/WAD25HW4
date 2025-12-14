@@ -41,8 +41,11 @@ export default {
     async fetchPost() {
       this.working = true;
       try {
+        const token = localStorage.getItem('token');
         const id = this.$route.params.id;
-        const res = await axios.get(`http://localhost:3000/api/posts/${id}` );
+        const res = await axios.get(`http://localhost:3000/api/posts/${id}`, {
+          headers: { Authorization: 'Bearer ' + token }
+        });
         this.post = res.data;
         this.body = res.data.body; // post body to the text area
       } catch (err) {
@@ -51,14 +54,17 @@ export default {
         this.working = false;
       }
     },
-
     async updatePost() {
       this.working = true;
       try {
+        const token = localStorage.getItem('token');
         const id = this.$route.params.id;
 
         await axios.put(`http://localhost:3000/api/posts/${id}`, {
-          body: this.body});
+          body: this.body
+        }, {
+          headers: { Authorization: 'Bearer ' + token }
+        });
 
         await this.fetchPost();
       } catch (err) {
@@ -71,8 +77,12 @@ export default {
     async deletePost() {
       this.working = true;
       try {
+        const token = localStorage.getItem('token');
         const id = this.$route.params.id;
-        await axios.delete(`http://localhost:3000/api/posts/${id}`);
+
+        await axios.delete(`http://localhost:3000/api/posts/${id}`, {
+          headers: { Authorization: 'Bearer ' + token }
+        });
 
         // after deleting the post go back to posts page
         this.$router.push({ name: "posts" });
@@ -116,5 +126,4 @@ h3 {
   justify-content: center;
   flex-direction: column;
 }
-
 </style>

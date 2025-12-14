@@ -6,10 +6,15 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-let pool;
+let _pool;
+
+let resolveReady;
+const ready = new Promise((resolve) => {
+  resolveReady = resolve;
+});
 
 rl.question("Enter DB password: ", (password) => {
-  pool = new Pool({
+  _pool = new Pool({
     user: "postgres",
     password: password,      // 👈 EI OLE enam hardcoded
     database: "WAD25HW4",
@@ -18,8 +23,10 @@ rl.question("Enter DB password: ", (password) => {
   });
 
   rl.close();
+  resolveReady(_pool);
 });
 
 module.exports = {
-  pool: () => pool,
+  pool: () => _pool,
+  ready,
 };

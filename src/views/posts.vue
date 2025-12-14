@@ -33,6 +33,7 @@ export default {
     return {
       posts: [],
       working: false,
+      error: ""
     };
   },
   async created() {
@@ -42,7 +43,10 @@ export default {
     async fetchPosts() {
       this.working = true;
       try {
-        const res = await axios.get("http://localhost:3000/api/posts");
+        const token = localStorage.getItem('token');
+        const res = await axios.get("http://localhost:3000/api/posts", {
+          headers: { Authorization: 'Bearer ' + token }
+        });
         this.posts = res.data;
       } catch (err) {
         this.error = err.toString();
@@ -53,7 +57,10 @@ export default {
     async DeleteAll() {
       this.working = true;
       try {
-        await axios.delete("http://localhost:3000/api/posts");
+        const token = localStorage.getItem('token');
+        await axios.delete("http://localhost:3000/api/posts", {
+          headers: { Authorization: 'Bearer ' + token }
+        });
         await this.fetchPosts();
       } catch (err) {
         this.error = err.toString();
@@ -71,8 +78,11 @@ export default {
         this.working = false;
       }
       
+    },
+    LogOut() {
+      localStorage.removeItem('token');
+      this.$router.push({ name: 'login' });
     }
-
   }
 };
 </script>
@@ -89,5 +99,3 @@ export default {
   justify-content: space-between;
 }
 </style>
-
-

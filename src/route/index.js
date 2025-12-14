@@ -10,7 +10,7 @@ const routes = [{
     path: "/", 
     name: "posts", 
     component: Posts,
-    meta: { title: "Posts", requiresAuth: false} 
+    meta: { title: "Posts", requiresAuth: true} 
 },{
     path: "/signup", 
     name: "signup", 
@@ -30,13 +30,13 @@ const routes = [{
     path: "/viewpost/:id", 
     name: "viewpost", 
     component: ViewPost,
-    meta: { title: "View post", requiresAuth: false},
+    meta: { title: "View post", requiresAuth: true},
     props: true,
 },{
     path: "/addpost", 
     name: "addpost", 
     component: AddPost,
-    meta: { title: "Add post", requiresAuth: false}
+    meta: { title: "Add post", requiresAuth: true}
 }]
 
 const router = createRouter({
@@ -47,7 +47,9 @@ const router = createRouter({
 // check if the user is logged in
 router.beforeEach((to) => {
   const token = localStorage.getItem('token')
-  if (to.meta.requiresAuth && !token) {
+  const needsAuth = to.matched.some(r => r.meta && r.meta.requiresAuth)
+
+  if (needsAuth && !token) {
     return { name: 'login' }
   }
 })

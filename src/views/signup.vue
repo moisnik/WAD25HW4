@@ -47,14 +47,24 @@
         {{ validationMessage }}
       </p>
 
-      <button type="submit">
+      <p v-if="serverError" class="password-message">
+        {{ serverError }}
+      </p>
+
+      <button type="submit" :disabled="working">
         Create account
+      </button>
+
+      <button type="button" @click="$router.push({ name: 'login' })" :disabled="working">
+        Already have an account? Log in
       </button>
     </form>
   </main>
 </template>
 
 <script>
+import "/public/res/css/login.css";
+
 export default {
   name: "Signup",
   data() {
@@ -63,7 +73,9 @@ export default {
       email: "",
       password: "",
       confirmPassword: "",
-      triedSubmit: false
+      triedSubmit: false,
+      serverError: "",
+      working: false
     };
   },
   computed: {
@@ -138,38 +150,25 @@ export default {
   methods: {
     hasValidLength(password) {
       const length = password.length;
-
       return length >= 8 && length < 15;
     },
     startsWithUppercase(password) {
-      if (!password) {
-        return false;
-      }
-
+      if (!password) return false;
       const firstCharacter = password[0];
-
       return firstCharacter >= "A" && firstCharacter <= "Z";
     },
     hasUppercase(password) {
       for (const character of password) {
-        const isUppercase =
-          character >= "A" &&
-          character <= "Z";
-
-        if (isUppercase) {
-          return true;
-        }
+        const isUppercase = character >= "A" && character <= "Z";
+        if (isUppercase) return true;
       }
-
       return false;
     },
     hasTwoLowercase(password) {
       let lowercaseCount = 0;
 
       for (const character of password) {
-        const isLowercase =
-          character >= "a" &&
-          character <= "z";
+        const isLowercase = character >= "a" && character <= "z";
 
         if (isLowercase) {
           lowercaseCount += 1;
@@ -184,78 +183,57 @@ export default {
     },
     hasDigit(password) {
       for (const character of password) {
-        const isDigit =
-          character >= "0" &&
-          character <= "9";
-
-        if (isDigit) {
-          return true;
-        }
+        const isDigit = character >= "0" && character <= "9";
+        if (isDigit) return true;
       }
-
       return false;
     },
     hasUnderscore(password) {
-      const containsUnderscore = password.includes("_");
-
-      return containsUnderscore;
+      return password.includes("_");
     },
-    handleSubmit() {
+    async handleSubmit() {
       this.triedSubmit = true;
+      this.serverError = "";
 
       if (!this.formOk) {
         return;
       }
 
-      alert("Signup successful (demo only).");
+      this.working = true;
 
-      this.fullName = "";
-      this.email = "";
-      this.password = "";
-      this.confirmPassword = "";
-      this.triedSubmit = false;
+      try {
+        const API = 'http://localhost:3000';
+
+        const res = await fetch(`${API}/api/auth/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: this.email,
+            password: this.password
+          })
+        });
+
+        let data = {};
+        try { data = await res.json(); } catch (e) {}
+
+        if (!res.ok) {
+          this.serverError = data && data.error ? data.error : "Signup failed";
+          this.password = "";
+          this.confirmPassword = "";
+          return;
+        }
+
+        localStorage.setItem('token', data.token);
+        this.password = "";
+        this.confirmPassword = "";
+        this.$router.push({ name: 'posts' });
+
+      } catch (e) {
+        this.serverError = "Network error";
+      } finally {
+        this.working = false;
+      }
     }
   }
 };
 </script>
-
-<style>
-.signup-page {
-  max-width: 480px;
-  margin: 2rem auto;
-  padding: 2rem;
-}
-
-.signup-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-row {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-row label {
-  margin-bottom: 0.25rem;
-}
-
-.form-row input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-}
-
-.password-message {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
-  color: #c0392b;
-}
-
-button[type="submit"] {
-  margin-top: 0.5rem;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  cursor: pointer;
-}
-</style>

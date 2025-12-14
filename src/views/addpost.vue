@@ -37,8 +37,12 @@ export default {
     async addPost() {
       this.working = true;
       try {
+        const token = localStorage.getItem('token');
         await axios.post(`http://localhost:3000/api/posts`, {
-          body: this.body});
+          body: this.body
+        }, {
+          headers: { Authorization: 'Bearer ' + token }
+        });
         this.$router.push({ name: "posts" });
       } catch (err) {
         this.error = "Could not add post.";
