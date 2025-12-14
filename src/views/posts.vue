@@ -50,7 +50,7 @@ export default {
         this.working = false;
       }
     },
-    async deleteAll() {
+    async DeleteAll() {
       this.working = true;
       try {
         await axios.delete("http://localhost:3000/api/posts");

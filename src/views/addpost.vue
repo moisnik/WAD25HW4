@@ -63,11 +63,10 @@ h3 {
 }
 
 .buttons{
-  width: 50%;
+  width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;   
   padding-top: 20px;
-  margin: 0 auto;
 }
 .edit-body{
   width: 100%;
@@ -79,6 +78,9 @@ h3 {
   display: flex;
   justify-content: center;
   flex-direction: column;
+}
+.button {
+ background-color: rgb(216, 216, 216);
 }
 
 </style>

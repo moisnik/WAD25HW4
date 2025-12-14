@@ -1,11 +1,25 @@
-const Pool = require('pg').Pool;
+const Pool = require("pg").Pool;
+const readline = require("readline");
 
-const pool = new Pool({
-    user: "postgres",
-    password: "postgres",
-    database: "WAD25HW4",
-    host: "localhost",
-    port: "5433"
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
 });
 
-module.exports = pool;
+let pool;
+
+rl.question("Enter DB password: ", (password) => {
+  pool = new Pool({
+    user: "postgres",
+    password: password,      // 👈 EI OLE enam hardcoded
+    database: "WAD25HW4",
+    host: "localhost",
+    port: "5433",
+  });
+
+  rl.close();
+});
+
+module.exports = {
+  pool: () => pool,
+};

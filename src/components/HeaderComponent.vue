@@ -7,7 +7,6 @@
         <router-link to="/signup" class="nav-link">Sign up</router-link>
         <router-link to="/login" class="nav-link">Log in</router-link>
         <router-link to="/contactus" class="nav-link">Contact us</router-link>
-        <router-link to="/addpost" class="nav-link">Add post</router-link>
       </nav>
 
       <div class="profile">
